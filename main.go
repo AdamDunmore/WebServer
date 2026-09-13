@@ -43,8 +43,8 @@ type LoginRequest struct {
 }
 
 func main() {
-	// ip := "100.99.196.79"
-	ip := "localhost"
+	ip := "100.99.196.79"
+	// ip := "localhost"
 	port := "1913"
 
 	files, err := fs.Sub(web, "web")
