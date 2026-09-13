@@ -6,17 +6,27 @@
 		<link rel="stylesheet" href="/style.css">
 	</head>
 	<body>
-		<h1>Server</h1>
-        <input id="media_name" placeholder="Enter a Qobuz Url"/>
-		<button onclick="download()">Download</button>
-        <p class="hidden" id="status_label"></p>
+        <box class="menu_box">
+            <h1>Music Manager</h1>
+            <input id="media_name" placeholder="Enter a Qobuz Url/Album"/>
+            <button onclick="download()">Download</button>
+            <button onclick="search()">Search</button>
+            <p class="hidden" id="status_label"></p>
+            <box id="media_results"/>
+        </box>
         <script>
-            async function download() {
-                const input = document.getElementById("media_name");
-                const status_label = document.getElementById("status_label");
-                status_label.classList = [];
-                status_label.innerHTML = "Downloading";
-                const res = await fetch("/api/download", {
+            let input
+            let status_label
+            let media_results
+
+            async function requestMedia(route){
+                input = document.getElementById("media_name");
+                status_label = document.getElementById("status_label");
+                if(route === "download"){
+                    status_label.classList = [];
+                    status_label.innerHTML = "Downloading";
+                }
+                const res = await fetch(`/api/${route}`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -25,9 +35,47 @@
                         name: input.value
                     })
                 });
-                const text = await res.text();
+                return res;
+            }
+
+            async function search() {
+                media_results = document.getElementById("media_results");
+                const res = await requestMedia("search")
+                const json = await res.json();
+
+                media_results.innerHTML = json.map(result => `<button class="media_result" onclick="download_id('${result.id}')">${result.desc}</button>`).join("\n")
+            }
+
+            async function download() {
+                input = document.getElementById("media_name");
+                if (input.value.slice(0,29) != "https://play.qobuz.com/album/") return
+                const res = await requestMedia("download") 
                 if (await res.ok) {
                     status_label.innerHTML = "Complete";
+                    input.value = "";
+                    setTimeout(() => {
+                        status_label.innerHTML = "";
+                        status_label.classList [ "hidden" ];
+                    }, 3000)
+                }
+            }
+
+            async function download_id(id) {
+                status_label = document.getElementById("status_label");
+                status_label.classList = [];
+                status_label.innerHTML = "Downloading";
+                const res = await fetch(`/api/download_id`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: id
+                    })
+                }); 
+                if (await res.ok) {
+                    status_label.innerHTML = "Complete";
+                    input.value = "";
                     setTimeout(() => {
                         status_label.innerHTML = "";
                         status_label.classList [ "hidden" ];

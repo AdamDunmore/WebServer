@@ -1,3 +1,49 @@
+* {
+    font-family: "Roboto", sans-serif;
+    overflow: hidden;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+input, button {
+    font-size: 20px;
+    padding: 5px;
+    border-radius: 10px;
+    border: none;
+}
+
 .hidden {
     display: none;
+}
+
+.menu_box {
+    background-color: #3B4252;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#media_results {
+    overflow-y: scroll;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.media_result {
+    padding: 10px;
+    width: 100%;
+    height: 50px;
+    flex-shrink: 0;
 }

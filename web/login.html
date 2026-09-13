@@ -6,13 +6,21 @@
 		<link rel="stylesheet" href="/style.css">
 	</head>
 	<body>
-		<h1>Login</h1>
-        <input id="password" placeholder="Password"/>
-        <button onclick="login()">Login</button>
-        <p class="hidden" id="incorrect_label">Incorrect Password</p>
+        <box class="menu_box">
+            <h1>Login</h1>
+            <input id="password" placeholder="Password"/>
+            <button onclick="login()">Login</button>
+            <p class="hidden" id="incorrect_label">Incorrect Password</p>
+        </box>
         <script>
+            const input = document.getElementById("password");
+            input.addEventListener("keypress", event => {
+                if(event.key == "Enter"){
+                    login();
+                }
+            })
+
             async function login(){
-                const input = document.getElementById("password");
                 const incorrect_label = document.getElementById("incorrect_label");
                 const res = await fetch("/api/login", {
                     method: "POST",
