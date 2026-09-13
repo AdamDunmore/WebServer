@@ -123,12 +123,11 @@ func main() {
 		sessions[sessionID] = true
 
 		// Give session to browser
-		secure := ip != "localhost" && ip != "127.0.0.1"
 		http.SetCookie(w, &http.Cookie{
 			Name:     "session",
 			Value:    sessionID,
 			HttpOnly: true,
-			Secure:   secure,
+			Secure:   false,
 			SameSite: http.SameSiteStrictMode,
 			Path:     "/",
 		})
