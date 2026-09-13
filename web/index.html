@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Server Panel</title>
+		<link rel="stylesheet" href="/style.css">
+	</head>
+	<body>
+		<h1>Server</h1>
+        <input id="media_name" placeholder="Enter a Qobuz Url"/>
+		<button onclick="download()">Download</button>
+        <p class="hidden" id="status_label"></p>
+        <script>
+            async function download() {
+                const input = document.getElementById("media_name");
+                const status_label = document.getElementById("status_label");
+                status_label.classList = [];
+                status_label.innerHTML = "Downloading";
+                const res = await fetch("/api/download", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: input.value
+                    })
+                });
+                const text = await res.text();
+                if (await res.ok) {
+                    status_label.innerHTML = "Complete";
+                    setTimeout(() => {
+                        status_label.innerHTML = "";
+                        status_label.classList [ "hidden" ];
+                    }, 3000)
+                }
+            }
+        </script>
+	</body>
+</html>

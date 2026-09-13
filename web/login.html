@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Server Panel Login</title>
+		<link rel="stylesheet" href="/style.css">
+	</head>
+	<body>
+		<h1>Login</h1>
+        <input id="password" placeholder="Password"/>
+        <button onclick="login()">Login</button>
+        <p class="hidden" id="incorrect_label">Incorrect Password</p>
+        <script>
+            async function login(){
+                const input = document.getElementById("password");
+                const incorrect_label = document.getElementById("incorrect_label");
+                const res = await fetch("/api/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        password: input.value
+                    })
+                });
+                if (!(await res.ok)){
+                    incorrect_label.classList = [];
+                    setTimeout(() => incorrect_label.classList = [ "hidden" ], 3000)
+                } else {
+                    window.location.href = "/";
+                }
+            }
+        </script>
+	</body>
+</html>
