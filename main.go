@@ -27,7 +27,6 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Register Routes
-	registerDownload(mux)
 	registerDownloadId(mux)
 	registerSearch(mux)
 	registerLogin(mux, files)

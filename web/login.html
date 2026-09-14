@@ -6,12 +6,16 @@
 		<link rel="stylesheet" href="/style.css">
 	</head>
 	<body>
-        <box class="menu_box">
-            <h1>Login</h1>
-            <input id="password" placeholder="Password"/>
-            <button onclick="login()">Login</button>
-            <p class="hidden" id="incorrect_label">Incorrect Password</p>
-        </box>
+        <div class="menu_box">
+            <div id="login_container">
+                <div id="login_box">
+                    <h1>Login</h1>
+                    <input id="password" placeholder="Password"/>
+                    <button id="login_button" onclick="login()">Login</button>
+                    <p class="hidden" id="incorrect_label">Incorrect Password</p>
+                </div>
+            </div>
+        </div>
         <script>
             const input = document.getElementById("password");
             input.addEventListener("keypress", event => {

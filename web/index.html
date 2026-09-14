@@ -8,59 +8,50 @@
 	<body>
         <box class="menu_box">
             <h1>Music Manager</h1>
-            <input id="media_name" placeholder="Enter a Qobuz Url/Album"/>
-            <button onclick="download()">Download</button>
-            <button onclick="search()">Search</button>
+            <div id="media_container">
+                <div id="media_type_box">
+                    <label class="media_type_label">Album<input type="radio" name="media_type" value="album" checked></label>
+                    <label class="media_type_label">Track<input type="radio" name="media_type" value="track"></label>
+                    <label class="media_type_label" title="(Warning downloads ALL of artists music)">Artist<input type="radio" name="media_type" value="track" disabled></label>
+                    <label class="media_type_label">Playlist<input type="radio" name="media_type" value="track" disabled></label>
+                </div>
+                <div id="media_input_box">
+                    <input id="media_name" placeholder="Enter a Qobuz Media Name"/>
+                    <button id="media_confirm" onclick="search()">Search</button>
+                </div>
+            </div>
             <p class="hidden" id="status_label"></p>
-            <box id="media_results"/>
+            <box class="hidden" id="media_results"/>
         </box>
         <script>
             let input
             let status_label
             let media_results
 
-            async function requestMedia(route){
+            async function search() {
+                media_results = document.getElementById("media_results");
                 input = document.getElementById("media_name");
-                status_label = document.getElementById("status_label");
-                if(route === "download"){
-                    status_label.classList = [];
-                    status_label.innerHTML = "Downloading";
-                }
-                const res = await fetch(`/api/${route}`, {
+                const media_type = document.querySelector('input[name="media_type"]:checked')?.value;
+                console.log(media_type)
+                const res = await fetch(`/api/search`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        name: input.value
+                        id: input.value,
+                        media_type: media_type 
                     })
                 });
-                return res;
-            }
 
-            async function search() {
-                media_results = document.getElementById("media_results");
-                const res = await requestMedia("search")
                 const json = await res.json();
 
-                media_results.innerHTML = json.map(result => `<button class="media_result" onclick="download_id('${result.id}')">${result.desc}</button>`).join("\n")
+                media_results.classList = [];
+                media_results.innerHTML = json.map(result => `<button class="media_result" onclick="download_id('${result.id}', '${media_type}')">${result.desc}</button>`).join("\n")
             }
 
-            async function download() {
-                input = document.getElementById("media_name");
-                if (input.value.slice(0,29) != "https://play.qobuz.com/album/") return
-                const res = await requestMedia("download") 
-                if (await res.ok) {
-                    status_label.innerHTML = "Complete";
-                    input.value = "";
-                    setTimeout(() => {
-                        status_label.innerHTML = "";
-                        status_label.classList [ "hidden" ];
-                    }, 3000)
-                }
-            }
-
-            async function download_id(id) {
+            async function download_id(id, media_type) {
+                media_results.classList = [ "hidden" ];
                 status_label = document.getElementById("status_label");
                 status_label.classList = [];
                 status_label.innerHTML = "Downloading";
@@ -70,7 +61,8 @@
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        id: id
+                        id: id,
+                        media_type: media_type
                     })
                 }); 
                 if (await res.ok) {

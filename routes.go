@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"crypto/rand"
 	"encoding/hex"
-	"net/url"
 )
 
 var sessions = make(map[string]bool)
@@ -17,12 +16,9 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
-type SearchRequest struct {
-	Name string `json:"name"`
-}
-
-type DownloadIdRequest struct {
+type MediaRequest struct {
 	Id string `json:"id"`
+	MediaType string `json:"media_type"`
 }
 
 func auth(next http.Handler) http.Handler {
@@ -39,7 +35,7 @@ func auth(next http.Handler) http.Handler {
 
 func registerSearch(mux *http.ServeMux){
 	mux.Handle("/api/search", auth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var data SearchRequest
+		var data MediaRequest
 
 		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
@@ -53,8 +49,8 @@ func registerSearch(mux *http.ServeMux){
 			"qobuz",
 			"-o",
 			"/tmp/rip-results",
-			"album",
-			data.Name,
+			data.MediaType,
+			data.Id,
 		)
 
 		output, err := cmd.CombinedOutput()
@@ -76,7 +72,7 @@ func registerSearch(mux *http.ServeMux){
 
 func registerDownloadId(mux *http.ServeMux){
 	mux.Handle("/api/download_id", auth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var data DownloadIdRequest
+		var data MediaRequest
 
 		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
@@ -95,7 +91,7 @@ func registerDownloadId(mux *http.ServeMux){
 			"FLAC",
 			"id",
 			"qobuz",
-			"album",
+			data.MediaType, // TODO artist (downloads ALL music), playlist (maybe change download dir?) 
 			data.Id,
 		)
 		
@@ -105,44 +101,6 @@ func registerDownloadId(mux *http.ServeMux){
 		}
 
 		w.Write([]byte("Download " + data.Id + " successful"))
-	})))
-}
-
-func registerDownload(mux *http.ServeMux){
-	mux.Handle("/api/download", auth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var data SearchRequest
-
-		err := json.NewDecoder(r.Body).Decode(&data)
-		if err != nil {
-			http.Error(w, "Invalid JSON", http.StatusBadRequest)
-			return
-		}
-
-		cmdURL, err := url.ParseRequestURI(data.Name)
-		if err != nil || (cmdURL.Scheme != "http" && cmdURL.Scheme != "https") {
-			http.Error(w, "Invalid URL", http.StatusBadRequest)
-			return
-		}
-
-		var home = os.Getenv("HOME");
-		cmd := exec.Command(
-			"rip",
-			"-q",
-			"3",
-			"-f",
-			home + "/Music/Downloads/",
-			"-c",
-			"FLAC",
-			"url",
-			data.Name,
-		)
-
-		if err := cmd.Run(); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Write([]byte("Download " + data.Name + " successful"))
 	})))
 }
 
