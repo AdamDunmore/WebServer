@@ -28,11 +28,33 @@
             let status_label
             let media_results
 
+            async function search_library(){
+                media_results = document.getElementById("media_results");
+                input = document.getElementById("media_name");
+                const media_type = document.querySelector('input[name="media_type"]:checked')?.value;
+                const res = await fetch(`/api/search_library`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: input.value,
+                        media_type: media_type // TODO fix track media_type 
+                    })
+                });
+
+                const json = await res.json();
+                console.log(json)
+
+                media_results.classList = [];
+                media_results.innerHTML = json.map(result => `<button class="media_result">${result.title}</button>`).join("\n")
+
+            }
+
             async function search() {
                 media_results = document.getElementById("media_results");
                 input = document.getElementById("media_name");
                 const media_type = document.querySelector('input[name="media_type"]:checked')?.value;
-                console.log(media_type)
                 const res = await fetch(`/api/search`, {
                     method: "POST",
                     headers: {

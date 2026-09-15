@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"io/fs"
+	"io"
 	"net/http"
 	"os/exec"
 	"crypto/rand"
@@ -67,6 +68,52 @@ func registerSearch(mux *http.ServeMux){
 		
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(fileData)
+	})))
+}
+
+func registerLibrarySearch(mux *http.ServeMux){
+	mux.Handle("/api/search_library", auth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var data MediaRequest
+	
+		err := json.NewDecoder(r.Body).Decode(&data)
+		if err != nil {
+			http.Error(w, "Invalid JSON", http.StatusBadRequest)
+			return
+		}
+
+		req, err := http.NewRequest(
+			http.MethodGet,
+			"http://100.99.196.79:8686/api/v1/" + data.MediaType,
+			nil,
+		)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+		req.Header.Set("X-Api-Key", lidarr_apikey)
+		req.Header.Set("Accept", "application/json")
+
+		resp, err := http.DefaultClient.Do(req)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadGateway)
+			return
+		}
+		defer resp.Body.Close()
+
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadGateway)
+			return
+		}
+
+		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+			http.Error(w, string(body), resp.StatusCode)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(body)
 	})))
 }
 

@@ -13,6 +13,7 @@ var web embed.FS
 var ip string
 var port string
 var password string
+var lidarr_apikey string
 
 func main() {
 	checkConfig()
@@ -32,6 +33,7 @@ func main() {
 	registerLogin(mux, files)
 	registerApiLogin(mux)
 	registerWeb(mux, files)
+	registerLibrarySearch(mux)
 
 	// Print status to log
 	log.Println("Listening on " + ip + ":" + port)
