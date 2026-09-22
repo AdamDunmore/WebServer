@@ -10,7 +10,7 @@
             <div id="login_container">
                 <div id="login_box">
                     <h1>Login</h1>
-                    <input id="password" placeholder="Password"/>
+                    <input id="password" placeholder="Password" type="password"/>
                     <button id="login_button" onclick="login()">Login</button>
                     <p class="hidden" id="incorrect_label">Incorrect Password</p>
                 </div>
@@ -32,7 +32,7 @@
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        password: input.value
+                        password: input.value.trim()
                     })
                 });
                 if (!(await res.ok)){
