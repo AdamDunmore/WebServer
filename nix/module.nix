@@ -1,13 +1,14 @@
-{ lib, config, ... }:
+{ lib, config, pkgs, ... }:
 let 
     inherit (lib) mkEnableOption mkOption types mkIf;
     cfg = config.services.webserver;
+    package = import ./pkg.nix { inherit pkgs; };
     options = {
         enable = mkEnableOption "Enables the Go Webserver Module";
         environmentVariables = mkOption {
             type = types.attrsOf types.str;
             default = {};
-            example = { WEBSERVER_PORT = "1913"; };
+            example = { WEBSERVER_PORT = "9999"; };
             description = "Sets environment variables for the server";
         };
     };
@@ -16,16 +17,18 @@ in
     nixosModule = {
         options.services.webserver = options;
         config = mkIf cfg.enable {
+            environment.systemPackages = [ package ];
             systemd.services.webserver = {
                 description = "Personal Go Web Server";
                 after = [ "network-online.target" ];
                 wants = [ "network-online.target" ];
 
                 serviceConfig = {
-                    ExecStart = "/home/adam/bin/webserver"; # TODO move when add package
-                    WorkingDirectory = "/home/adam/WebServer"; # TODO move when add package
+                    ExecStart = "${package}/bin/webserver";
+                    # WorkingDirectory = "/home/adam/WebServer"; # TODO test
                     Restart = "on-failure";
                     RestartSec = 5;
+                    EnvironmentFile = cfg.passwordFile;
                 };
 
                 environment = cfg.environmentVariables;
@@ -38,21 +41,25 @@ in
 
     homeModule = {
         options.services.webserver = options;
-        systemd.user.services.webserver = mkIf cfg.enable {
-            Unit = {
-                Description = "Personal Go Web Server";
-                After = [ "network-online.target" ];
-            };
+        config = mkIf cfg.enable {
+            home.packages = [ package ];
+            systemd.user.services.webserver = {
+                Unit = {
+                    Description = "Personal Go Web Server";
+                    After = [ "network-online.target" ];
+                };
 
-            Service = {
-                ExecStart = "/home/adam/bin/webserver"; # TODO move when add package
-                WorkingDirectory = "/home/adam/WebServer"; # TODO move when add package
-                Restart = "on-failure";
-                RestartSec = 5;
-                Environment = cfg.environmentVariables;
-            };
+                Service = {
+                    ExecStart = "${package}/bin/webserver";
+                    # WorkingDirectory = "/home/adam/WebServer";
+                    Restart = "on-failure";
+                    RestartSec = 5;
+                    Environment = cfg.environmentVariables;
+                    EnvironmentFile = cfg.passwordFile; # TODO needs testing
+                };
 
-            Install.WantedBy = [ "default.target" ];
+                Install.WantedBy = [ "default.target" ];
+            };
         };
     };
 }
