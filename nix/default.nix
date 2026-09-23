@@ -1,5 +1,5 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, ... }:
 {
     devShells = import ./devshells.nix { inherit pkgs; };
-    modules = import ./module.nix { inherit lib; inherit config; };
+    modules = import ./module.nix;
 }
