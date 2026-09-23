@@ -12,13 +12,12 @@
                 allowUnfree = true;
             };
         };
-        nixModules = import ./nix self;
     in
     {     
-        nixosModules.default = nixModules.modules.nixosModule;
-        homeManagerModules.default = nixModules.modules.homeModule;
-        devShells.${system}.default = nixModules.devShells.default;
-        packages.${system}.default = nixModules.package { inherit pkgs; };
+        nixosModules.default = ./nix/nixos.nix;
+        homeManagerModules.default = ./nix/home.nix;
+        devShells.${system}.default = import ./nix/devshells.nix { inherit pkgs; };
+        packages.${system}.default = import ./nix/pkg.nix { inherit pkgs; };
         apps.${system}.default = { type = "app"; program = "${self.packages.${system}.default}/bin/webserver"; };
     };
 }
