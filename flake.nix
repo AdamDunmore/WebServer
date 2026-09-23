@@ -12,15 +12,11 @@
                 allowUnfree = true;
             };
         };
+        nixModules = import ./nix { inherit pkgs; };
     in
-    {
-        devShells.${system}.default = pkgs.mkShell { 
-            packages = with pkgs; [
-                go
-            ];
-            shellHook = ''
-                zsh
-            '';
-        };
+    {     
+        nixosModules.default = nixModules.modules.nixosModule;
+        homeManagerModules.default = nixModules.modules.homeModule;
+        devShells.${system}.default = nixModules.devShells.default;
     };
 }
