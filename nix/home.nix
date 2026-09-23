@@ -5,7 +5,7 @@ let
     package = import ./pkg.nix { inherit pkgs; };
 in
 {
-    imports = [ ./options.nix ];
+    # imports = [ ./options.nix ];
     config = mkIf cfg.enable {
         home.packages = [ package ];
         systemd.user.services.webserver = {
