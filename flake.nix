@@ -12,7 +12,7 @@
                 allowUnfree = true;
             };
         };
-        nixModules = import ./nix { inherit pkgs; };
+        nixModules = import ./nix { inherit pkgs; config = self.config; };
     in
     {     
         nixosModules.default = nixModules.modules.nixosModule;
