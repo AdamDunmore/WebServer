@@ -1,6 +1,6 @@
-{ lib, config, pkgs, ... }:
+{ config, pkgs, ... }:
 let 
-    inherit (lib) mkEnableOption mkOption types mkIf;
+    inherit (pkgs.lib) mkEnableOption mkOption types mkIf;
     cfg = config.services.webserver;
     package = import ./pkg.nix { inherit pkgs; };
     options = {
