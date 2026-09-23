@@ -3,7 +3,7 @@
     inputs = {
         nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";   
     };
-    outputs = { ... } @inputs: 
+    outputs = { self, ... } @inputs: 
     let
         system = "x86_64-linux";
         pkgs = import inputs.nixpkgs {
@@ -18,5 +18,7 @@
         nixosModules.default = nixModules.modules.nixosModule;
         homeManagerModules.default = nixModules.modules.homeModule;
         devShells.${system}.default = nixModules.devShells.default;
+        packages.${system}.default = nixModules.package { inherit pkgs; };
+        apps.${system}.default = { type = "app"; program = "${self.packages.${system}.default}/bin/webserver"; };
     };
 }
