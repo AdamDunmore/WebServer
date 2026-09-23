@@ -2,12 +2,12 @@
 let 
     inherit (pkgs.lib) mkIf;
     cfg = config.services.webserver;
-    package = import ./pkg.nix { inherit pkgs; };
+    # package = import ./pkg.nix { inherit pkgs; };
 in
 {
-    # imports = [ ./options.nix ];
+    imports = [ ./options.nix ];
     config = mkIf cfg.enable {
-        home.packages = [ package ];
+        # home.packages = [ package ];
         systemd.user.services.webserver = {
             Unit = {
                 Description = "Personal Go Web Server";
