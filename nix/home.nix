@@ -15,7 +15,8 @@ in
             };
 
             Service = {
-                ExecStart = "${package}/bin/webserver";
+                # ExecStart = "${package}/bin/webserver";
+                ExecStart = "/bin/sh";
                 # WorkingDirectory = "/home/adam/WebServer";
                 Restart = "on-failure";
                 RestartSec = 5;
