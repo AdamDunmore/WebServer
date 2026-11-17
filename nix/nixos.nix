@@ -1,5 +1,6 @@
-self: { config, pkgs, ... }:
+self: { config, ... }:
 let 
+    pkgs = self.pkgs;
     inherit (pkgs.lib) mkIf;
     cfg = config.services.webserver;
     package = import ./pkg.nix { inherit pkgs; };
