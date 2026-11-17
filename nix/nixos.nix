@@ -14,11 +14,13 @@ in
             wants = [ "network-online.target" ];
 
             serviceConfig = {
-                ExecStart = "${package}/bin/webserver";
+                ExecStart = pkgs.writeShellScript "start-webserver" ''
+                    export WEBSERVER_PASSWORD="$(cat cfg.passwordFile)" 
+                    ${package}/bin/webserver
+                '';
                 # WorkingDirectory = "/home/adam/WebServer"; # TODO test
                 Restart = "on-failure";
                 RestartSec = 5;
-                EnvironmentFile = cfg.passwordFile;
             };
 
             environment = cfg.environmentVariables;
