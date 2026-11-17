@@ -16,7 +16,7 @@ in
 
             serviceConfig = {
                 ExecStart = pkgs.writeShellScript "start-webserver" ''
-                    export WEBSERVER_PASSWORD="$(cat cfg.passwordFile)" 
+                    export WEBSERVER_PASSWORD="$(cat ${cfg.passwordFile})" 
                     ${package}/bin/webserver
                 '';
                 # WorkingDirectory = "/home/adam/WebServer"; # TODO test
