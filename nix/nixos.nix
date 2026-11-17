@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+self: { config, pkgs, ... }:
 let 
     inherit (pkgs.lib) mkIf;
     cfg = config.services.webserver;
