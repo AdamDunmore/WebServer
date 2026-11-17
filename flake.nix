@@ -9,11 +9,10 @@
         pkgs = inputs.nixpkgs.legacyPackages.${system};
     in
     {     
-        inherit pkgs;
+        inherit pkgs; # TODO find out the correct way to do this
         packages.${system}.default = import ./nix/pkg.nix { inherit pkgs; };
         apps.${system}.default = { type = "app"; program = "${self.packages.${system}.default}/bin/webserver"; };
         devShells.${system}.default = import ./nix/devshells.nix { inherit pkgs; };
-        # nixosModules.default =  import ./nix/nixos.nix self;
         nixosModules.default =  import ./nix/nixos.nix self;
         # homeManagerModules.default = ./nix/home.nix;
     };
