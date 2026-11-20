@@ -7,29 +7,30 @@
 	</head>
 	<body>
         <box class="menu_box">
-            <h1>Music Manager</h1>
-            <div id="media_container">
-                <div id="media_type_box">
-                    <label class="media_type_label">Album<input type="radio" name="media_type" value="album" checked></label>
-                    <label class="media_type_label">Track<input type="radio" name="media_type" value="track"></label>
-                    <label class="media_type_label" title="(Warning downloads ALL of artists music)">Artist<input type="radio" name="media_type" value="track" disabled></label>
-                    <label class="media_type_label">Playlist<input type="radio" name="media_type" value="track" disabled></label>
-                </div>
-                <div id="media_input_box">
+            <div class="header">
+                <h3 id="header_title">Music Manager</h3>
+            </div>
+            <div id="content">
+                <div id="media_container">
+                    <select name="media_type" id="media_type">
+                        <option value="album">Album</option>
+                        <option value="track">Track</option>
+                        <option value="artist">Artist</option>
+                    </select>
                     <input id="media_name" placeholder="Enter a Qobuz Media Name"/>
                     <button id="media_confirm" onclick="search()">Search</button>
                 </div>
+                <div class="" id="search_results" />
             </div>
             <p class="hidden" id="status_label"></p>
-            <box class="hidden" id="media_results"/>
         </box>
         <script>
             let input
             let status_label
-            let media_results
+            let search_results
 
             async function search_library(){
-                media_results = document.getElementById("media_results");
+                search_results = document.getElementById("search_results");
                 input = document.getElementById("media_name");
                 const media_type = document.querySelector('input[name="media_type"]:checked')?.value;
                 const res = await fetch(`/api/search_library`, {
@@ -46,15 +47,14 @@
                 const json = await res.json();
                 console.log(json)
 
-                media_results.classList = [];
-                media_results.innerHTML = json.map(result => `<button class="media_result">${result.title}</button>`).join("\n")
+                search_results.innerHTML = json.map(result => `<button class="media_result">${result.title}</button>`).join("\n")
 
             }
 
             async function search() {
-                media_results = document.getElementById("media_results");
+                search_results = document.getElementById("search_results");
                 input = document.getElementById("media_name");
-                const media_type = document.querySelector('input[name="media_type"]:checked')?.value;
+                const media_type = document.getElementById("media_type").value;
                 const res = await fetch(`/api/search`, {
                     method: "POST",
                     headers: {
@@ -68,12 +68,10 @@
 
                 const json = await res.json();
 
-                media_results.classList = [];
-                media_results.innerHTML = json.map(result => `<button class="media_result" onclick="download_id('${result.id}', '${media_type}')">${result.desc}</button>`).join("\n")
+                search_results.innerHTML = json.map(result => `<button class="media_result" onclick="download_id('${result.id}', '${media_type}')">${result.desc}</button>`).join("\n")
             }
 
             async function download_id(id, media_type) {
-                media_results.classList = [ "hidden" ];
                 status_label = document.getElementById("status_label");
                 status_label.classList = [];
                 status_label.innerHTML = "Downloading";
