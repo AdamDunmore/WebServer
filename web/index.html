@@ -55,6 +55,8 @@
                 search_results = document.getElementById("search_results");
                 input = document.getElementById("media_name");
                 const media_type = document.getElementById("media_type").value;
+                const media_confirm = document.getElementById("media_confirm");
+                media_confirm.innerText = "Searching";
                 const res = await fetch(`/api/search`, {
                     method: "POST",
                     headers: {
@@ -68,13 +70,13 @@
 
                 const json = await res.json();
 
+                media_confirm.innerText = "Done";
                 search_results.innerHTML = json.map(result => `<button class="media_result" onclick="download_id('${result.id}', '${media_type}')">${result.desc}</button>`).join("\n")
             }
 
             async function download_id(id, media_type) {
-                status_label = document.getElementById("status_label");
-                status_label.classList = [];
-                status_label.innerHTML = "Downloading";
+                const media_confirm = document.getElementById("media_confirm");
+                media_confirm.innerText = "Downloading";
                 const res = await fetch(`/api/download_id`, {
                     method: "POST",
                     headers: {
@@ -86,12 +88,9 @@
                     })
                 }); 
                 if (await res.ok) {
-                    status_label.innerHTML = "Complete";
+                    media_confirm.innerText = "Complete";
                     input.value = "";
-                    setTimeout(() => {
-                        status_label.innerHTML = "";
-                        status_label.classList [ "hidden" ];
-                    }, 3000)
+                    search_results.innerHTML = "";
                 }
             }
         </script>
