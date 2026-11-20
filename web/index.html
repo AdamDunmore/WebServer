@@ -30,6 +30,12 @@
             let status_label
             let search_results
 
+            document.addEventListener("keypress", event => {
+                if(event.key == "Enter"){
+                    search();
+                }
+            })
+
             async function search_library(){
                 search_results = document.getElementById("search_results");
                 input = document.getElementById("media_name");
