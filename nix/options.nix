@@ -13,7 +13,7 @@ in
         };
         user = mkOption {
             type = types.attrsOf types.str;
-            defalt = "";
+            default = "root";
             example = "adam";
             description = "User to run service as";
         };
