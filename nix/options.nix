@@ -12,7 +12,7 @@ in
             description = "Sets environment variables for the server";
         };
         user = mkOption {
-            type = types.attrsOf types.str;
+            type = types.str;
             default = "root";
             example = "adam";
             description = "User to run service as";
