@@ -1,6 +1,7 @@
 * {
     font-family: "Roboto", sans-serif;
     overflow: hidden;
+    color: white;
 }
 
 html, body {
@@ -10,13 +11,12 @@ html, body {
     margin: 0px;
 }
 
-input, button {
+input, button, select {
     font-size: 20px;
     padding: 5px;
     border-radius: 10px;
     border: none;
     background-color: #2E3440;
-    color: white;
 }
 
 .header {
