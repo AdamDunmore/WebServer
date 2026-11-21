@@ -124,6 +124,11 @@ input, button {
     border-radius: 10px;
 }
 
+#media_type, #media_name, #media_confirm, .media_result {
+    background-color: #2E3440;
+    color: white;
+}
+
 
 @media screen and (width <= 480px) {
     #login_box {
