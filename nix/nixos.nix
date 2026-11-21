@@ -20,12 +20,12 @@ in
                     export WEBSERVER_PASSWORD="$(cat ${cfg.passwordFile})" 
                     ${package}/bin/webserver
                 '';
-                environment.HOME = cfg.user;
                 Restart = "on-failure";
                 RestartSec = 5;
             };
 
-            environment = cfg.environmentVariables;
+            environment = cfg.environmentVariables
+                // { HOME = "/home/${cfg.user}"; };
 
             wantedBy = [ "multi-user.target" ];
         };
