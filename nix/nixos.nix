@@ -13,6 +13,7 @@ in
             description = "Personal Go Web Server";
             after = [ "network-online.target" ];
             wants = [ "network-online.target" ];
+            path = [ pkgs.streamip ];
 
             serviceConfig = {
                 ExecStart = pkgs.writeShellScript "start-webserver" ''
