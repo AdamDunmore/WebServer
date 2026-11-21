@@ -20,7 +20,7 @@ in
                     export WEBSERVER_PASSWORD="$(cat ${cfg.passwordFile})" 
                     ${package}/bin/webserver
                 '';
-                # WorkingDirectory = "/home/adam/WebServer"; # TODO test
+                environment.HOME = cfg.user;
                 Restart = "on-failure";
                 RestartSec = 5;
             };

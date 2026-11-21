@@ -11,6 +11,12 @@ in
             example = { WEBSERVER_PORT = "9999"; };
             description = "Sets environment variables for the server";
         };
+        user = mkOption {
+            type = types.attrsOf types.str;
+            defalt = "";
+            example = "adam";
+            description = "User to run service as";
+        };
         passwordFile = mkOption {
             type = types.str;
             default = "";
