@@ -20,10 +20,11 @@
 #                 Restart = "on-failure";
 #                 RestartSec = 5;
 #                 Environment = cfg.environmentVariables;
-#                 EnvironmentFile = cfg.passwordFile; # TODO needs testing
+#                 EnvironmentFile = cfg.passwordFile;
 #             };
 #
 #             Install.WantedBy = [ "default.target" ];
 #         };
 #     };
 # }
+# TODO rework into nixos module (maybe a common module?)

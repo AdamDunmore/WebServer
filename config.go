@@ -6,25 +6,24 @@ import (
 )
 
 func checkConfig(){
-	var envs = [4]string{	
+	const LEN = 3;
+
+	var envs = [LEN]string{	
 		"WEBSERVER_PASSWORD",
 		"WEBSERVER_IP",
 		"WEBSERVER_PORT",
-		"WEBSERVER_LIDARR_APIKEY",
 	}
 
-	var globals = [4]*string{
+	var globals = [LEN]*string{
 		&password,
 		&ip,
 		&port,
-		&lidarr_apikey,
 	}
 
-	var defaults = [4]string{
+	var defaults = [LEN]string{
 		"",
 		"localhost",
 		"1913",
-		"",
 	}
 
 	for i, env := range envs {
