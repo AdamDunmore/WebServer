@@ -17,6 +17,11 @@ input, button, select {
     border-radius: 10px;
     border: none;
     background-color: #2E3440;
+    transition: background-color 1s;
+}
+
+input:hover, button:hover, select:hover {
+    background-color: #5E81AC;
 }
 
 .header {
