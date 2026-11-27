@@ -26,10 +26,7 @@ func makeSessionID() string {
 func AttemptLogin(r *http.Request, w http.ResponseWriter, sessions map[string]*bool) bool {
 	cookie, err := r.Cookie("session")
 	var session_id string;
-	if (err != nil) { 
-		print("Error: " + err.Error());
-		return false; 
-	} else if (cookie.Value == "null") { 
+	if (err != nil || cookie.Value == "null") { 
 		session_id = makeSessionID();
 	} else {
 		session_id = cookie.Value; 
@@ -51,7 +48,12 @@ func AttemptLogin(r *http.Request, w http.ResponseWriter, sessions map[string]*b
 	return true;	
 }
 
-func RegisterRoutes(web embed.FS, ip string, port string){
+func RegisterRoutes(web embed.FS, globals[] *string){
+	var password string = *globals[0];
+	var ip string = *globals[1];
+	var port string = *globals[2];
+	var music_dir = *globals[3];
+
 	// Gets /web files
 	files, err := fs.Sub(web, "web")
 	if err != nil {
@@ -62,9 +64,10 @@ func RegisterRoutes(web embed.FS, ip string, port string){
 	sessions := CreateSessions();
 	RegisterHomePage(mux, files, sessions);
 	RegisterLoginPage(mux, files);
-	RegisterLogin(mux, sessions);
+	RegisterLogin(mux, sessions, password);
 	RegisterSearch(mux, sessions);
-	RegisterDownloadId(mux, sessions)
+	RegisterDownloadId(mux, sessions, music_dir);
+	RegisterGetDownloads(mux, sessions, music_dir);
 
 	// Print status to log
 	log.Println("Listening on " + ip + ":" + port)

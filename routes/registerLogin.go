@@ -2,13 +2,12 @@ package routes;
 
 import (
 	"encoding/json"
-	"os"
 	"net/http"
 )
 
 import "webserver/routes/classes"
 
-func RegisterLogin(mux *http.ServeMux, sessions map[string]*bool){
+func RegisterLogin(mux *http.ServeMux, sessions map[string]*bool, password string){
 	mux.Handle("/api/login", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var data classes.LoginRequest
 
@@ -17,7 +16,7 @@ func RegisterLogin(mux *http.ServeMux, sessions map[string]*bool){
 			return
 		}
 
-		if data.Password != os.Getenv("WEBSERVER_PASSWORD") {
+		if data.Password != password {
 			http.Error(w, "Invalid password", http.StatusUnauthorized)
 			return
 		}

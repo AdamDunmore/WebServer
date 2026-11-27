@@ -36,28 +36,6 @@
                 }
             })
 
-            async function search_library(){
-                search_results = document.getElementById("search_results");
-                input = document.getElementById("media_name");
-                const media_type = document.querySelector('input[name="media_type"]:checked')?.value;
-                const res = await fetch(`/api/search_library`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: input.value,
-                        media_type: media_type // TODO fix track media_type 
-                    })
-                });
-
-                const json = await res.json();
-                console.log(json)
-
-                search_results.innerHTML = json.map(result => `<button class="media_result">${result.title}</button>`).join("\n")
-
-            }
-
             async function search() {
                 search_results = document.getElementById("search_results");
                 input = document.getElementById("media_name");
@@ -99,6 +77,15 @@
                     input.value = "";
                     search_results.innerHTML = "";
                 }
+            }
+
+            async function get_downloads(){
+                const res = await fetch(`/api/get_downloads`, {
+                    method: "POST",
+                });
+
+                const c = await res.text();
+                console.log(c);
             }
         </script>
 	</body>

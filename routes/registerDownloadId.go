@@ -2,14 +2,13 @@ package routes;
 
 import (
 	"encoding/json"
-	"os"
 	"net/http"
 	"os/exec"
 )
 
 import "webserver/routes/classes"
 
-func RegisterDownloadId(mux *http.ServeMux, sessions map[string]*bool){
+func RegisterDownloadId(mux *http.ServeMux, sessions map[string]*bool, music_dir string){
 	mux.Handle("/api/download_id", RegisterAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var data classes.MediaRequest
 
@@ -19,13 +18,12 @@ func RegisterDownloadId(mux *http.ServeMux, sessions map[string]*bool){
 			return
 		}
 
-		var home = os.Getenv("HOME");
 		cmd := exec.Command(
 			"rip",
 			"-q",
 			"3",
 			"-f",
-			home + "/Music/Downloads/",
+			music_dir + "/Downloads/",
 			"-c",
 			"FLAC",
 			"id",

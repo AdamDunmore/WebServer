@@ -5,25 +5,28 @@ import (
 	"log"
 )
 
-func checkConfig(){
-	const LEN = 3;
+func checkConfig() []*string {
+	const LEN = 4;
 
 	var envs = [LEN]string{	
 		"WEBSERVER_PASSWORD",
 		"WEBSERVER_IP",
 		"WEBSERVER_PORT",
+		"WEBSERVER_MUSIC_DIR",
 	}
 
 	var globals = [LEN]*string{
 		&password,
 		&ip,
 		&port,
+		&music_dir,
 	}
 
 	var defaults = [LEN]string{
 		"",
 		"localhost",
 		"1913",
+		os.Getenv("HOME") + "/Music",
 	}
 
 	for i, env := range envs {
@@ -35,5 +38,7 @@ func checkConfig(){
 			*globals[i] = env_str
 		}
 	}	
+
+	return globals[:];
 }
 

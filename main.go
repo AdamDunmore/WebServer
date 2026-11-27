@@ -14,8 +14,9 @@ var web embed.FS
 var ip string
 var port string
 var password string
+var music_dir string
 
 func main() {
-	checkConfig()
-	routes.RegisterRoutes(web, ip, port);
+	globals := checkConfig()
+	routes.RegisterRoutes(web, globals);
 }
